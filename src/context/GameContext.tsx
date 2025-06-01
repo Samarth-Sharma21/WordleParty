@@ -1,7 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { GameState, Player, TileStatus, GameStatus, GameRoom } from '../types';
-import { getRandomWord, isValidWord, getWordDefinition } from '../data/words';
-import { toast } from 'react-toastify';
+import { getRandomWord, isValidWord } from '../data/words';
 
 // Define the context type
 interface GameContextType {
@@ -254,12 +253,11 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({
       }
 
       // Check if player name already exists in the room
-      if (room.players.some((p) => p.name === playerName)) {
+      if (room.players.some(p => p.name === playerName)) {
         setGameState((prev) => ({
           ...prev,
           isLoading: false,
-          error:
-            'A player with this name already exists in the room. Please choose a different name.',
+          error: 'A player with this name already exists in the room. Please choose a different name.',
         }));
         return;
       }
@@ -361,16 +359,6 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({
       ? GameStatus.LOST
       : GameStatus.ACTIVE;
 
-    // Show word definition when game ends
-    if (isWin || isLoss) {
-      getWordDefinition(answer).then((definition) => {
-        toast.info(`The word "${answer}" means: ${definition}`, {
-          autoClose: 10000, // Keep the toast visible for 10 seconds
-          position: 'bottom-center',
-        });
-      });
-    }
-
     // Update room players
     const updatedRoom = { ...gameState.room };
     updatedRoom.players = updatedRoom.players.map((p) =>
@@ -455,10 +443,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({
 
     // Update the game state in localStorage for real-time sync
     if (gameState.room.code !== 'SOLO') {
-      localStorage.setItem(
-        `game_${updatedRoom.code}`,
-        JSON.stringify(newState)
-      );
+      localStorage.setItem(`game_${updatedRoom.code}`, JSON.stringify(newState));
     }
   };
 

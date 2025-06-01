@@ -18,17 +18,17 @@ const LetterTile: React.FC<LetterTileProps> = ({
 }) => {
   // Add animation delay based on position for reveal effect
   const animationDelay = `${position * 0.15}s`;
-
+  
   // Animations based on status
   const getAnimation = () => {
     if (isCurrentRow && letter) {
       return 'animate-bounce-in';
     }
-
+    
     if (status !== 'empty' && letter) {
       return 'animate-scale-in';
     }
-
+    
     return '';
   };
 
@@ -43,12 +43,12 @@ const LetterTile: React.FC<LetterTileProps> = ({
         return 'bg-gray-500 text-white border-gray-500';
       case 'empty':
       default:
-        return letter
-          ? 'bg-white dark:bg-gray-700 text-gray-900 dark:text-white border-gray-300 dark:border-gray-600'
+        return letter 
+          ? 'bg-white dark:bg-gray-700 text-gray-900 dark:text-white border-gray-300 dark:border-gray-600' 
           : 'bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600';
     }
   };
-
+  
   return (
     <div
       className={`
@@ -58,15 +58,15 @@ const LetterTile: React.FC<LetterTileProps> = ({
         ${getStatusClasses()}
         ${getAnimation()}
       `}
-      style={{
+      style={{ 
         animationDelay,
-        borderColor:
-          playerColor && status === 'empty' ? playerColor : undefined,
-      }}>
+        borderColor: playerColor && status === 'empty' ? playerColor : undefined
+      }}
+    >
       {letter}
       {playerColor && status !== 'empty' && (
-        <div
-          className='absolute bottom-0 right-0 w-2 h-2 rounded-full'
+        <div 
+          className="absolute bottom-0 right-0 w-2 h-2 rounded-full" 
           style={{ backgroundColor: playerColor }}
         />
       )}
