@@ -1,0 +1,77 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    -webkit-tap-highlight-color: transparent;
+  }
+  
+  body {
+    @apply bg-background-light text-neutral-900 dark:bg-background-dark dark:text-neutral-50 font-sans antialiased;
+  }
+}
+
+@layer components {
+  .btn {
+    @apply px-6 py-3 rounded-lg font-medium transition-all duration-200 inline-flex items-center justify-center;
+  }
+  
+  .btn-primary {
+    @apply bg-primary-600 text-white hover:bg-primary-700 active:bg-primary-800;
+  }
+  
+  .btn-secondary {
+    @apply bg-secondary-600 text-white hover:bg-secondary-700 active:bg-secondary-800;
+  }
+  
+  .btn-accent {
+    @apply bg-accent-500 text-white hover:bg-accent-600 active:bg-accent-700;
+  }
+  
+  .btn-outline {
+    @apply border-2 border-primary-600 text-primary-600 hover:bg-primary-50 active:bg-primary-100 dark:hover:bg-primary-950 dark:active:bg-primary-900;
+  }
+  
+  .btn-ghost {
+    @apply text-neutral-700 hover:bg-neutral-100 active:bg-neutral-200 dark:text-neutral-300 dark:hover:bg-neutral-800 dark:active:bg-neutral-700;
+  }
+  
+  .card {
+    @apply bg-white dark:bg-neutral-800 rounded-xl shadow-soft p-6;
+  }
+  
+  .input {
+    @apply px-4 py-3 border border-neutral-300 dark:border-neutral-700 rounded-lg bg-white dark:bg-neutral-800 
+           focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent
+           transition-all duration-200;
+  }
+  
+  .letter-tile {
+    @apply flex items-center justify-center text-xl font-bold uppercase rounded-md shadow-soft
+           w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 select-none transition-all duration-200;
+  }
+  
+  .letter-correct {
+    @apply bg-success-500 text-white border-success-600;
+  }
+  
+  .letter-present {
+    @apply bg-warning-500 text-white border-warning-600;
+  }
+  
+  .letter-absent {
+    @apply bg-neutral-400 text-white border-neutral-500;
+  }
+  
+  .letter-pending {
+    @apply bg-white dark:bg-neutral-800 text-neutral-900 dark:text-white border-2 border-neutral-300 dark:border-neutral-600;
+  }
+  
+  .keyboard-key {
+    @apply flex items-center justify-center rounded-md font-medium px-2 py-4 sm:py-5 mx-0.5 my-1 select-none
+           transition-all duration-150 uppercase text-sm sm:text-base
+           bg-neutral-200 dark:bg-neutral-700 hover:bg-neutral-300 dark:hover:bg-neutral-600
+           active:bg-neutral-400 dark:active:bg-neutral-500;
+  }
+}
