@@ -16,6 +16,7 @@ export interface Player {
   isHost: boolean;
   score: number;
   guessCount: number;
+  peerId?: string;
 }
 
 // Game room type

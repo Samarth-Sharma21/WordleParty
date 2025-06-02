@@ -44,7 +44,7 @@ function App() {
   return (
     <GameProvider>
       <NotificationProvider>
-        <Router>
+        <Router basename="/WordleParty">
           <div className='min-h-screen flex flex-col bg-background-light dark:bg-background-dark text-neutral-900 dark:text-neutral-50'>
             <Header isDarkMode={isDarkMode} toggleDarkMode={toggleDarkMode} />
             <div className='flex-grow'>

@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { GameState, Player, TileStatus, GameStatus, GameRoom } from '../types';
 import { getRandomWord, isValidWord } from '../data/words';
+import Peer from 'peerjs';
 
 // Define the context type
 interface GameContextType {
@@ -127,12 +128,77 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({
     return () => clearInterval(intervalId);
   }, [gameState.room, gameState.player]);
 
+  // WebRTC Configuration
+  const iceServers = {
+    iceServers: [
+      { urls: 'stun:stun.services.mozilla.com' },
+      { urls: 'stun:stun.stunprotocol.org:3478' },
+    ],
+  };
+
+  // Initialize with error handling
+  const initializePeer = (roomId: string) => {
+    try {
+      const peer = new Peer({
+        config: iceServers,
+        host: '0.peerjs.com',
+        port: 443,
+        secure: true,
+      });
+
+      peer.on('open', (id) => {
+        // Connect peers in the room
+        if (gameState.room) {
+          gameState.room.players.forEach((player) => {
+            if (player.id !== id && player.peerId) {
+              const conn = peer.connect(player.peerId);
+              conn.on('open', () => {
+                conn.send(
+                  JSON.stringify({
+                    type: 'SYNC_STATE',
+                    payload: gameState,
+                  })
+                );
+              });
+            }
+          });
+        }
+      });
+
+      peer.on('connection', (conn) => {
+        conn.on('data', (data) => {
+          const message = JSON.parse(data);
+          if (message.type === 'SYNC_STATE') {
+            setGameState((prev) => ({
+              ...prev,
+              ...message.payload,
+              players: message.payload.players,
+            }));
+          }
+        });
+      });
+    } catch (error) {
+      console.error('PeerJS initialization failed:', error);
+    }
+  };
+
+  const generateRoomCode = () => {
+    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+    let roomCode = '';
+    for (let i = 0; i < 6; i++) {
+      roomCode += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return roomCode;
+  };
+
   const createRoom = (
     playerName: string,
-    wordLength = 5,
-    maxPlayers = 3,
-    singlePlayer = false
+    wordLength: number,
+    maxPlayers: number,
+    singlePlayer?: boolean
   ) => {
+    const roomId = generateRoomCode();
+    initializePeer(roomId);
     setGameState((prev) => ({
       ...prev,
       isLoading: true,
@@ -148,6 +214,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({
         isHost: true,
         score: 0,
         guessCount: 0,
+        peerId: playerId,
       };
 
       // Choose a random word
@@ -253,11 +320,12 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({
       }
 
       // Check if player name already exists in the room
-      if (room.players.some(p => p.name === playerName)) {
+      if (room.players.some((p) => p.name === playerName)) {
         setGameState((prev) => ({
           ...prev,
           isLoading: false,
-          error: 'A player with this name already exists in the room. Please choose a different name.',
+          error:
+            'A player with this name already exists in the room. Please choose a different name.',
         }));
         return;
       }
@@ -271,6 +339,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({
           isHost: false,
           score: 0,
           guessCount: 0,
+          peerId: playerId,
         };
 
         room.players.push(player);
@@ -443,7 +512,10 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({
 
     // Update the game state in localStorage for real-time sync
     if (gameState.room.code !== 'SOLO') {
-      localStorage.setItem(`game_${updatedRoom.code}`, JSON.stringify(newState));
+      localStorage.setItem(
+        `game_${updatedRoom.code}`,
+        JSON.stringify(newState)
+      );
     }
   };
 
