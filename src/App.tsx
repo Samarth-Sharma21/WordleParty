@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { HashRouter as Router, Routes, Route } from 'react-router-dom';
 import Header from './components/Header';
 import HomePage from './pages/HomePage';
 import PlayPage from './pages/PlayPage';
@@ -43,8 +43,7 @@ function App() {
 
   return (
     <GameProvider>
-      <NotificationProvider>
-        <Router basename="/WordleParty">
+      <NotificationProvider>        <Router>
           <div className='min-h-screen flex flex-col bg-background-light dark:bg-background-dark text-neutral-900 dark:text-neutral-50'>
             <Header isDarkMode={isDarkMode} toggleDarkMode={toggleDarkMode} />
             <div className='flex-grow'>
